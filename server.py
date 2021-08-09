@@ -46,7 +46,8 @@ def make_result(no_chkupdate_list: list) -> dict:
                 }
                 anitya_items.append(d)
         github_or_gitlab_source = get_github_or_gitlab_source(i)
-        q.put({'name': i, 'anitya': anitya_items, 'github/gitlab': github_or_gitlab_source})
+        q.put({'name': i, 'anitya': anitya_items,
+              'github/gitlab': github_or_gitlab_source})
     q.put(None)
 
 
@@ -81,7 +82,7 @@ def get_result():
 
 
 @app.route("/<directory_name>")
-def test2(directory_name: str):
+def get_result_to_user(directory_name: str):
     no_chkupdate_list = make_no_chkupdate_list(directory_name)
     t = threading.Thread(target=make_result, args=(no_chkupdate_list, ))
     t.start()
