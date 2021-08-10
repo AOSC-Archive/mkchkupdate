@@ -94,7 +94,11 @@ def get_result_to_user(directory_name: str):
         print("2. Github/Gitlab: {}".format(result["github/gitlab"]))
         d["2"] = result["github/gitlab"]
         ipt = input("CHKUPDATE?: ")
-        set_chkupdate(result["name"], d.get(ipt) or "CHKUPDATE=\"{}\"".format(ipt))
+        if ipt != "":
+            set_chkupdate(result["name"], d.get(ipt) or "CHKUPDATE=\"{}\"".format(ipt))
+        else:
+            continue
+
 
 
 def set_chkupdate(package_name: str, chkupdate: str):
