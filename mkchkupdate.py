@@ -136,4 +136,4 @@ def search_package_path(package_name: str) -> str:
 
 
 if __name__ == "__main__":
-    result = get_result_to_user(sys.argv[1])
+    get_result_to_user(sys.argv[1])

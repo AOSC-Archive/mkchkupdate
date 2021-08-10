@@ -1,3 +1,5 @@
 {
-    "python.pythonPath": "/usr/sbin/python3"
+    "python.pythonPath": "/usr/sbin/python3",
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true
 }
