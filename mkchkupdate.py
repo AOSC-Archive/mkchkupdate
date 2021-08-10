@@ -18,6 +18,7 @@ def make_no_chkupdate_list(directory_name: str) -> list:
                     spec = f.readlines()
                     if len([i for i in spec if "CHKUPDATE=" in i]) == 0:
                         result.append(section.name)
+    result.sort()
     return result
 
 
