@@ -94,10 +94,8 @@ def get_result_to_user(directory_name: str):
         print("2. Github/Gitlab: {}".format(result["github/gitlab"]))
         d["2"] = result["github/gitlab"]
         ipt = input("CHKUPDATE?: ")
-        if d[ipt]:
-            set_chkupdate(result["name"], d[ipt])
-        else:
-            set_chkupdate(result["name"], ipt)
+        set_chkupdate(result["name"], d.get(ipt) or ipt)
+
 
 def set_chkupdate(package_name: str, chkupdate: str):
     path = search_package_path(package_name)
