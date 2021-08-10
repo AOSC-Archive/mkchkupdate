@@ -1,11 +1,10 @@
 #!/usr/bin/python3
 
 import os
+import sys
 import httpx
 import threading
 import queue
-from flask import Flask
-app = Flask(__name__)
 
 q = queue.Queue()
 
@@ -47,7 +46,7 @@ def make_result(no_chkupdate_list: list) -> dict:
                 anitya_items.append(d)
         github_or_gitlab_source = get_github_or_gitlab_source(i)
         q.put({'name': i, 'anitya': anitya_items,
-              'github/gitlab': github_or_gitlab_source})
+               'github/gitlab': github_or_gitlab_source})
     q.put(None)
 
 
@@ -77,21 +76,41 @@ def get_github_or_gitlab_source(package_name: str) -> str:
         return result
 
 
-def get_result():
-    return q.get()
-
-
-@app.route("/<directory_name>")
 def get_result_to_user(directory_name: str):
     no_chkupdate_list = make_no_chkupdate_list(directory_name)
     t = threading.Thread(target=make_result, args=(no_chkupdate_list, ))
     t.start()
-    result = get_result()
-    return result
+    while True:
+        result = q.get()
+        if result is None:
+            return
+        print("Name: {}".format(result["name"]))
+        print("Anitya: ")
+        d = {}
+        for index, anitya_item in enumerate(result["anitya"]):
+            print("1-{}. Name: {}, Homepage: {}, Lastest Version: {}, CHKUPDATE: {}".format(
+                index+1, anitya_item["Name"], anitya_item["Homepage"], anitya_item["LastestVersion"], anitya_item["CHKUPDATE"]))
+            d["1-{}".format(index+1)] = anitya_item["CHKUPDATE"]
+        print("2. Github/Gitlab: {}".format(result["github/gitlab"]))
+        d["2"] = result["github/gitlab"]
+        ipt = input("CHKUPDATE?: ")
+        if d[ipt]:
+            set_chkupdate(result["name"], d[ipt])
+        else:
+            set_chkupdate(result["name"], ipt)
+
+def set_chkupdate(package_name: str, chkupdate: str):
+    path = search_package_path(package_name)
+    if path is None:
+        return
+    try:
+        with open("{}/spec".format(path), "at") as f:
+            f.write("{}\n".format(chkupdate))
+    except Exception as e:
+        print(e)
 
 
 def search_package_path(package_name: str) -> str:
-    print("search:{}".format(package_name))
     with os.scandir(".") as dir1:
         for section in dir1:
             if section.is_dir() and not section.name.startswith('.'):
@@ -119,4 +138,4 @@ def search_package_path(package_name: str) -> str:
 
 
 if __name__ == "__main__":
-    app.run()
+    result = get_result_to_user(sys.argv[1])
