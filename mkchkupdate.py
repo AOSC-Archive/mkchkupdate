@@ -102,12 +102,13 @@ def get_result_to_user(directory_name: str):
         print("Name: {}".format(result["name"]))
         print("Anitya: ")
         d = {}
+        anitya_len = len(result["anitya"])
         for index, anitya_item in enumerate(result["anitya"]):
-            print("1-{}. Name: {}, Homepage: {}, Lastest Version: {}, CHKUPDATE: {}".format(
+            print("{}. Name: {}, Homepage: {}, Lastest Version: {}, CHKUPDATE: {}".format(
                 index+1, anitya_item["Name"], anitya_item["Homepage"], anitya_item["LastestVersion"], anitya_item["CHKUPDATE"]))
-            d["1-{}".format(index+1)] = anitya_item["CHKUPDATE"]
-        print("2. Github/Gitlab: {}".format(result["github/gitlab"]))
-        d["2"] = result["github/gitlab"]
+            d["{}".format(index+1)] = anitya_item["CHKUPDATE"]
+        print("{}. Github/Gitlab: {}".format(count+1, result["github/gitlab"]))
+        d["{}".format(anitya_len+1)] = result["github/gitlab"]
         ipt = input("CHKUPDATE?: ")
         if ipt != "":
             set_chkupdate(result["name"], d.get(
