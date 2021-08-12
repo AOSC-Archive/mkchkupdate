@@ -84,7 +84,7 @@ def get_github_or_gitlab_source(package_name: str) -> str:
 
 def is_gitlab_server(url: str) -> bool:
     try:
-        r = httpx.get("{}/api/v4/projects/")
+        r = httpx.get("{}/api/v4/projects/".format(url))
         r.raise_for_status()
         return True
     except:
