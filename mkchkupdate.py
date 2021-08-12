@@ -109,16 +109,19 @@ def get_result_to_user(directory_name: str):
             spec = f.readlines()
         if len(spec) == 0:
             print("spec is empty!")
+        else:
+            print("spec file:")
+            print("---")
+            print("".join(spec))
+            print("---")
         d = {}
         anitya_len = len(result["anitya"])
         for index, anitya_item in enumerate(result["anitya"]):
             print("{}. Name: {}, Homepage: {}, Lastest Version: {}, CHKUPDATE: {}".format(
                 index+1, anitya_item["Name"], anitya_item["Homepage"], anitya_item["LastestVersion"], anitya_item["CHKUPDATE"]))
             d["{}".format(index+1)] = anitya_item["CHKUPDATE"]
-            print("{}{}".format("".join(spec), anitya_item["CHKUPDATE"]))
         if result["github/gitlab"] != "":
             print("{}. Github/Gitlab: {}".format(anitya_len+1, result["github/gitlab"]))
-            print("{}{}".format("".join(spec), result["github/gitlab"]))
             d["{}".format(anitya_len+1)] = result["github/gitlab"]
         ipt = input("\nCHKUPDATE?: ")
         print("\n")
