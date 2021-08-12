@@ -5,6 +5,7 @@ import sys
 import httpx
 import threading
 import queue
+from tenacity import *
 
 q = queue.Queue()
 
@@ -21,10 +22,10 @@ def make_no_chkupdate_list(directory_name: str) -> list:
     result.sort()
     return result
 
-
+@retry(stop=(stop_after_delay(10) | stop_after_attempt(5)), wait=wait_fixed(2))
 def request_anitya(package_name: str) -> dict:
     r = httpx.get(
-        "https://release-monitoring.org/api/projects/?pattern={}".format(package_name))
+            "https://release-monitoring.org/api/projects/?pattern={}".format(package_name))
     r.raise_for_status()
     return r.json()
 
@@ -70,7 +71,7 @@ def get_github_or_gitlab_source(package_name: str) -> str:
             if 'github' in i:
                 result = "CHKUPDATE=\"github::repo={}/{}\"".format(
                     src_split[3], src_split[4])
-            elif 'gitlab' in i:
+            elif 'gitlab.com' in i:
                 result = "CHKUPDATE=\"gitlab::repo={}/{}\"".format(
                     src_split[3], src_split[4])
 
