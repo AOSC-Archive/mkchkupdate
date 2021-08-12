@@ -100,16 +100,25 @@ def get_result_to_user(directory_name: str):
         if result is None:
             return
         print("Name: {}".format(result["name"]))
-        print("Anitya: ")
+        path = search_package_path(package_name)
+        if path is None:
+            print("path does not exist!")
+            continue
+        spec = ""
+        with open("{}/spec".format(path), "w") as f:
+            spec = f.readlines()
         d = {}
         anitya_len = len(result["anitya"])
         for index, anitya_item in enumerate(result["anitya"]):
             print("{}. Name: {}, Homepage: {}, Lastest Version: {}, CHKUPDATE: {}".format(
                 index+1, anitya_item["Name"], anitya_item["Homepage"], anitya_item["LastestVersion"], anitya_item["CHKUPDATE"]))
             d["{}".format(index+1)] = anitya_item["CHKUPDATE"]
+            print("{}\n{}".format(spec, anitya_item["CHKUPDATE"]))
         print("{}. Github/Gitlab: {}".format(count+1, result["github/gitlab"]))
+        print("{}\n{}".format(spec, result["github/gitlab"]))
         d["{}".format(anitya_len+1)] = result["github/gitlab"]
         ipt = input("CHKUPDATE?: ")
+        print("\n")
         if ipt != "":
             set_chkupdate(result["name"], d.get(
                 ipt) or "CHKUPDATE=\"{}\"".format(ipt))
