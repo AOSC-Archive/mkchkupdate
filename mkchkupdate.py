@@ -22,10 +22,11 @@ def make_no_chkupdate_list(directory_name: str) -> list:
     result.sort()
     return result
 
+
 @retry(stop=(stop_after_delay(10) | stop_after_attempt(5)), wait=wait_fixed(2))
 def request_anitya(package_name: str) -> dict:
     r = httpx.get(
-            "https://release-monitoring.org/api/projects/?pattern={}".format(package_name))
+        "https://release-monitoring.org/api/projects/?pattern={}".format(package_name))
     r.raise_for_status()
     return r.json()
 
@@ -74,8 +75,20 @@ def get_github_or_gitlab_source(package_name: str) -> str:
             elif 'gitlab.com' in i:
                 result = "CHKUPDATE=\"gitlab::repo={}/{}\"".format(
                     src_split[3], src_split[4])
+            elif is_gitlab_server(i):
+                result = "CHKUPDATE=\"gitlab::repo={}/{};intense=https://{}\"".format(
+                    src_split[3], src_split[4], src_split[2])
 
         return result
+
+
+def is_gitlab_server(url: str) -> bool:
+    try:
+        r = httpx.get("{}/api/v4/projects/")
+        r.raise_for_status()
+        return True
+    except:
+        return False
 
 
 def get_result_to_user(directory_name: str):
@@ -97,10 +110,10 @@ def get_result_to_user(directory_name: str):
         d["2"] = result["github/gitlab"]
         ipt = input("CHKUPDATE?: ")
         if ipt != "":
-            set_chkupdate(result["name"], d.get(ipt) or "CHKUPDATE=\"{}\"".format(ipt))
+            set_chkupdate(result["name"], d.get(
+                ipt) or "CHKUPDATE=\"{}\"".format(ipt))
         else:
             continue
-
 
 
 def set_chkupdate(package_name: str, chkupdate: str):
