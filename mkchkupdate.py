@@ -121,7 +121,8 @@ def get_result_to_user(directory_name: str):
                 index+1, anitya_item["Name"], anitya_item["Homepage"], anitya_item["LastestVersion"], anitya_item["CHKUPDATE"]))
             d["{}".format(index+1)] = anitya_item["CHKUPDATE"]
         if result["github/gitlab"] != "":
-            print("{}. Github/Gitlab: {}".format(anitya_len+1, result["github/gitlab"]))
+            print("{}. Github/Gitlab: {}".format(anitya_len +
+                  1, result["github/gitlab"]))
             d["{}".format(anitya_len+1)] = result["github/gitlab"]
         ipt = input("\nCHKUPDATE?: ")
         print("\n")
