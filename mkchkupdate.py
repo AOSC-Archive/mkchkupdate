@@ -76,7 +76,7 @@ def get_github_or_gitlab_source(package_name: str) -> str:
                 result = "CHKUPDATE=\"gitlab::repo={}/{}\"".format(
                     src_split[3], src_split[4])
             elif is_gitlab_server(i):
-                result = "CHKUPDATE=\"gitlab::repo={}/{};instence=https://{}\"".format(
+                result = "CHKUPDATE=\"gitlab::repo={}/{};instance=https://{}\"".format(
                     src_split[3], src_split[4], src_split[2])
 
         return result
