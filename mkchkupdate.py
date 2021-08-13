@@ -5,6 +5,7 @@ import sys
 import httpx
 import threading
 import queue
+import time
 from tenacity import *
 
 q = queue.Queue()
@@ -48,8 +49,15 @@ def make_result(no_chkupdate_list: list) -> dict:
                 }
                 anitya_items.append(d)
         github_or_gitlab_source = get_github_or_gitlab_source(i)
-        q.put({'name': i, 'anitya': anitya_items,
-               'github/gitlab': github_or_gitlab_source})
+        if q.qsize() != 20:
+            q.put({'name': i, 'anitya': anitya_items,
+                   'github/gitlab': github_or_gitlab_source})
+        else:
+            while q.qsize() == 20:
+                time.sleep(1)
+            q.put({'name': i, 'anitya': anitya_items,
+                   'github/gitlab': github_or_gitlab_source})
+
     q.put(None)
 
 
