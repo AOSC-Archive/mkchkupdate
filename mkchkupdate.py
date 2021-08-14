@@ -175,7 +175,7 @@ def search_package_path(package_name: str) -> str:
                                                 defines = f.readlines()
                                         finally:
                                             for line in defines:
-                                                if "PKGNAME=" in line and (package_name == line[8:] or "\"{}\"".format(package_name) == line[8:]):
+                                                if "PKGNAME=" in line and ("{}\n".format(package_name) == line[8:] or "\"{}\"\n".format(package_name) == line[8:]):
                                                     return package.path[2:]
 
 
